@@ -150,6 +150,51 @@ flutter run
 
 ---
 
+## 📲 Put it on your iPad WITHOUT owning a Mac
+
+Apple normally requires a Mac to build iOS apps. This project is set up so you
+can do it **without one**, by (1) building the `.ipa` on a cloud Mac with
+**Codemagic**, then (2) installing it from your Windows PC with **Sideloadly**
+using a **free Apple ID**.
+
+> ⚠️ Reality check: with a *free* Apple ID the installed app **stops working
+> after 7 days** and must be reinstalled (Apple's rule). A paid Apple Developer
+> account ($99/yr) extends this to a year. Also, TestFlight is NOT an option for
+> iOS 12 — the TestFlight app itself requires a newer iOS.
+
+### Part 1 — Put the code on GitHub
+1. Make a free account at <https://github.com> and create a **new empty repo**
+   called `pick2learn` (no README — this project already has one).
+2. In this project folder, connect and push (replace `YOU`):
+   ```bash
+   git remote add origin https://github.com/YOU/pick2learn.git
+   git push -u origin main
+   ```
+
+### Part 2 — Build the .ipa in the cloud (Codemagic)
+1. Sign up at <https://codemagic.io> with your GitHub account (free tier).
+2. **Add application → pick2learn repo.** Codemagic detects `codemagic.yaml`.
+3. Run the **"iOS unsigned IPA (for sideloading)"** workflow.
+4. When it finishes (~10–15 min), download the **`Pick2Learn-unsigned.ipa`**
+   artifact to your Windows PC.
+
+### Part 3 — Install it on the iPad from Windows (Sideloadly)
+1. Install **iTunes** (Apple's site) and **Sideloadly** from
+   <https://sideloadly.io> on your Windows PC.
+2. Plug the iPad into the PC with a cable; tap **Trust** on the iPad.
+3. Open Sideloadly, drag in `Pick2Learn-unsigned.ipa`, enter your **Apple ID**,
+   and click **Start**. (It signs the app with your Apple ID.)
+4. On the iPad: **Settings → General → VPN & Device Management →** tap your
+   Apple ID → **Trust**.
+5. Open **Pick2Learn** from the home screen. 🎉
+6. In the app, open **Settings** and paste your AI key so OCR + answers work.
+
+> To avoid the 7-day reinstall hassle, install **AltStore** instead of
+> Sideloadly — it can auto-refresh the app while your PC is on the same Wi-Fi.
+> AltStore works on iOS 12.2+, so it supports your iPad.
+
+---
+
 ## 🤖 Android notes
 
 `flutter create .` sets sensible defaults. The `image_picker` and `camera`
