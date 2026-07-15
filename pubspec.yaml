@@ -1,0 +1,78 @@
+name: pick2learn
+description: "Pick2Learn — a beginner-friendly homework helper that scans, reads, and explains schoolwork step by step across Android, iOS, Web, Windows, macOS, and Linux."
+publish_to: "none"
+
+# App version. Format is: <version>+<build number>
+version: 1.0.0+1
+
+environment:
+  # iOS 12 is supported by stable Flutter up to and INCLUDING 3.32.x; Flutter
+  # 3.35 raised the minimum to iOS 13 (3.34 was only ever a beta). This project
+  # also uses the Color.withValues() API, added in Flutter 3.27. So the supported
+  # STABLE window for "iOS 12.5.7 + this code" is Flutter 3.27 through 3.32
+  # (use the latest 3.32.x). Do not upgrade to Flutter 3.35+ for iOS 12 devices.
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- UI / Design ------------------------------------------------------
+  cupertino_icons: ^1.0.8      # iOS-style icons
+  google_fonts: ^6.2.1         # Nice, modern typography (Material 3)
+  dynamic_color: ^1.7.0        # Material You dynamic color (falls back safely)
+  flutter_markdown: ^0.7.3     # Renders step-by-step answers with formatting
+  markdown: ^7.2.2             # Underlying markdown parser (custom math syntax)
+  flutter_math_fork: ^0.7.2    # Renders LaTeX math equations beautifully
+  math_expressions: ^2.6.0     # Evaluates calculator expressions safely
+  flutter_animate: ^4.5.0      # Simple, smooth animations
+  lottie: ^3.1.2               # Optional richer animations (loading, empty states)
+
+  # --- State management -------------------------------------------------
+  flutter_riverpod: ^2.5.1     # Riverpod for clean, testable state management
+
+  # --- Local storage ----------------------------------------------------
+  shared_preferences: ^2.3.2   # Small key/value settings (theme, flags)
+  sqflite: ^2.3.3+1            # Local SQLite DB (mobile/desktop) for history
+  sqflite_common_ffi: ^2.3.3   # SQLite for Windows/Linux/macOS desktop
+  sqflite_common_ffi_web: ^0.4.5+2  # SQLite for Web
+  path_provider: ^2.1.4        # Finds safe file paths on every platform
+  path: ^1.9.0
+
+  # --- Camera / Images --------------------------------------------------
+  image_picker: ^1.1.2         # Take a photo or pick from gallery (all platforms)
+  camera: ^0.11.0+2            # Live camera preview for "Scan Homework"
+  image: ^4.2.0                # Light image processing / resizing before upload
+
+  # --- Networking (cloud OCR + AI explanations) -------------------------
+  http: ^1.2.2                 # Calls the AI/vision service
+  crypto: ^3.0.5               # Hashing (e.g. de-duplicating scans)
+
+  # --- Utilities --------------------------------------------------------
+  intl: ^0.19.0                # Date/number formatting
+  uuid: ^4.5.0                 # Unique IDs for saved items
+  collection: ^1.18.0
+  url_launcher: ^6.3.0         # Open links from settings/about
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0        # Recommended lint rules
+
+flutter:
+  uses-material-design: true
+
+  # Bundled assets. Create these folders (empty is fine to start).
+  assets:
+    - assets/images/
+    - assets/animations/
+
+  # Uncomment and add font files if you want a custom bundled font instead
+  # of google_fonts (useful for offline / restricted networks):
+  # fonts:
+  #   - family: Inter
+  #     fonts:
+  #       - asset: assets/fonts/Inter-Regular.ttf
+  #       - asset: assets/fonts/Inter-Bold.ttf
+  #         weight: 700

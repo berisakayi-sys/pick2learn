@@ -1,0 +1,44 @@
+# Codemagic CI/CD config — builds Pick2Learn for iOS in the cloud (on a real
+# Mac) WITHOUT you owning a Mac, and produces an UNSIGNED .ipa.
+#
+# You then sign + install that .ipa onto your iPad from Windows using Sideloadly
+# (with a free Apple ID). See the "Put it on your iPad" section of README.md.
+#
+# How to use:
+#   1. Push this project to a GitHub/GitLab repo (or upload in Codemagic).
+#   2. In Codemagic, add the app and run the "ios-unsigned" workflow.
+#   3. Download the Pick2Learn-unsigned.ipa artifact when it finishes.
+
+workflows:
+  ios-unsigned:
+    name: iOS unsigned IPA (for sideloading)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: 3.32.5
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+
+      - name: Install CocoaPods dependencies
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+
+      - name: Build iOS (no code signing)
+        script: |
+          flutter build ios --release --no-codesign
+
+      - name: Package into an unsigned .ipa
+        script: |
+          set -e
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          # Zip the Payload folder into a standard .ipa container.
+          zip -r9 Pick2Learn-unsigned.ipa Payload
+          mv Pick2Learn-unsigned.ipa $CM_BUILD_DIR/
+    artifacts:
+      # This is the file you download and feed to Sideloadly.
+      - Pick2Learn-unsigned.ipa

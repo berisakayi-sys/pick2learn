@@ -1,0 +1,19 @@
+# Lint rules for the project. These catch common mistakes and keep the code
+# consistent. Powered by the recommended flutter_lints package.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # Keep these as warnings, not build-breaking errors, for a friendlier
+    # beginner experience.
+    prefer_const_constructors: warning
+    avoid_print: warning
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
+linter:
+  rules:
+    - prefer_single_quotes
+    - avoid_redundant_argument_values
+    - use_key_in_widget_constructors
