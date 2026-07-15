@@ -157,10 +157,11 @@ can do it **without one**, by (1) building the `.ipa` on a cloud Mac with
 **Codemagic**, then (2) installing it from your Windows PC with **Sideloadly**
 using a **free Apple ID**.
 
-> ⚠️ Reality check: with a *free* Apple ID the installed app **stops working
-> after 7 days** and must be reinstalled (Apple's rule). A paid Apple Developer
-> account ($99/yr) extends this to a year. Also, TestFlight is NOT an option for
-> iOS 12 — the TestFlight app itself requires a newer iOS.
+> ✅ You have the **paid Apple Developer Program**, so when you sign into
+> Sideloadly with that Apple ID the app is signed with a **1-year certificate** —
+> no weekly reinstalling. (With a free Apple ID it would expire every 7 days.)
+> Note: TestFlight is still NOT an option here, because the TestFlight app
+> itself requires a newer iOS than 12.5.8.
 
 ### Part 1 — Put the code on GitHub
 1. Make a free account at <https://github.com> and create a **new empty repo**
