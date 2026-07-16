@@ -33,6 +33,10 @@ workflows:
         script: flutter pub get
       - name: Install CocoaPods dependencies
         script: find . -name "Podfile" -execdir pod install \;
+      - name: Apply provisioning profiles + generate export options
+        # Writes /Users/builder/export_options.plist from the profiles Codemagic
+        # already installed, which the build step below needs.
+        script: xcode-project use-profiles
       - name: Build signed ad-hoc IPA
         script: |
           flutter build ipa --release \
