@@ -18,11 +18,16 @@ workflows:
     integrations:
       app_store_connect: pick2learn_asc
     environment:
+      # Automatic signing: Codemagic reuses the certificate already stored in
+      # its Code signing identities (pick2learn_cert) instead of creating a new
+      # one, and creates the ad-hoc provisioning profile (which includes every
+      # registered device). No new certificate = no hitting the 2-cert limit.
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: com.example.pick2learn
       flutter: 3.32.5
       xcode: latest
       cocoapods: default
-      vars:
-        BUNDLE_ID: "com.example.pick2learn"
     scripts:
       - name: Register the iPad UDID (safe to re-run)
         script: |
@@ -31,27 +36,6 @@ workflows:
             --platform IOS \
             --udid c2df88a2d879a687572be0c8ccaa8be74118e765 || \
             echo "Device already registered — continuing."
-      - name: Initialize keychain
-        script: keychain initialize
-      - name: Generate a private key for the signing certificate
-        # The signing tool can't save/create a certificate without a private
-        # key, so we generate a fresh one here and hand it to the next step.
-        script: |
-          openssl genrsa -out /tmp/cert_key.pem 2048
-      - name: Create/fetch the ad-hoc signing certificate + profile
-        # --create makes the App ID, the signing certificate (using the private
-        # key above), and an ad-hoc provisioning profile that includes every
-        # registered device — all if they don't already exist.
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_ADHOC \
-            --platform IOS \
-            --certificate-key=@file:/tmp/cert_key.pem \
-            --create
-      - name: Add the certificate to the keychain
-        script: keychain add-certificates
-      - name: Apply the provisioning profile to the Xcode project
-        script: xcode-project use-profiles
       - name: Get Flutter packages
         script: flutter pub get
       - name: Install CocoaPods dependencies
