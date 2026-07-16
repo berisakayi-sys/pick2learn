@@ -15,27 +15,20 @@ workflows:
     instance_type: mac_mini_m2
     # Makes the App Store Connect API key (added in Codemagic UI as
     # "pick2learn_asc") available to the signing CLI below.
-    integrations:
-      app_store_connect: pick2learn_asc
     environment:
-      # Automatic signing: Codemagic reuses the certificate already stored in
-      # its Code signing identities (pick2learn_cert) instead of creating a new
-      # one, and creates the ad-hoc provisioning profile (which includes every
-      # registered device). No new certificate = no hitting the 2-cert limit.
+      # MANUAL signing: point directly at the provisioning profile + certificate
+      # already stored in Codemagic's Code signing identities. p2l_profile_a is
+      # the ad-hoc profile whose certificate (pick2learn_cert) Codemagic holds
+      # the private key for, so signing works and no new certificate is created.
       ios_signing:
-        distribution_type: ad_hoc
-        bundle_identifier: com.example.pick2learn
+        provisioning_profiles:
+          - p2l_profile_a
+        certificates:
+          - pick2learn_cert
       flutter: 3.32.5
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Register the iPad UDID (safe to re-run)
-        script: |
-          app-store-connect devices register \
-            --name "iPad Air" \
-            --platform IOS \
-            --udid c2df88a2d879a687572be0c8ccaa8be74118e765 || \
-            echo "Device already registered — continuing."
       - name: Get Flutter packages
         script: flutter pub get
       - name: Install CocoaPods dependencies
