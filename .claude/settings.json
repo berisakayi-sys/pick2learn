@@ -5,7 +5,8 @@
       "Read(//c/Flutter/**)",
       "PowerShell(\"flutter.bat at C:\\\\flutter\\\\bin: $\\(Test-Path 'C:\\\\flutter\\\\bin\\\\flutter.bat'\\)\"; \"dart.bat present: $\\(Test-Path 'C:\\\\flutter\\\\bin\\\\dart.bat'\\)\"; \"---\"; \"Top of C:\\\\flutter:\"; if \\(Test-Path 'C:\\\\flutter'\\) { Get-ChildItem 'C:\\\\flutter' | Select-Object -First 15 Name | Format-Table -AutoSize } else { \"C:\\\\flutter missing\" })",
       "PowerShell(Start-Process \"ms-settings:developers\"; \"Opened Developer settings. Also checking current state...\"; $key='HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\AppModelUnlock'; if \\(Test-Path $key\\) { $v=\\(Get-ItemProperty $key -Name AllowDevelopmentWithoutDevLicense -ErrorAction SilentlyContinue\\).AllowDevelopmentWithoutDevLicense; \"Developer Mode currently: $\\(if\\($v -eq 1\\){'ON'}else{'OFF'}\\)\" } else { \"Developer Mode: OFF \\(key not set\\)\" })",
-      "PowerShell($key='HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\AppModelUnlock'; $v=\\(Get-ItemProperty $key -Name AllowDevelopmentWithoutDevLicense -ErrorAction SilentlyContinue\\).AllowDevelopmentWithoutDevLicense; \"Developer Mode: $\\(if\\($v -eq 1\\){'ON ✓'}else{'still OFF'}\\)\")"
+      "PowerShell($key='HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\AppModelUnlock'; $v=\\(Get-ItemProperty $key -Name AllowDevelopmentWithoutDevLicense -ErrorAction SilentlyContinue\\).AllowDevelopmentWithoutDevLicense; \"Developer Mode: $\\(if\\($v -eq 1\\){'ON ✓'}else{'still OFF'}\\)\")",
+      "WebFetch(domain:sideloadly.io)"
     ]
   }
 }

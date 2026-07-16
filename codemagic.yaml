@@ -1,15 +1,54 @@
-# Codemagic CI/CD config — builds Pick2Learn for iOS in the cloud (on a real
-# Mac) WITHOUT you owning a Mac, and produces an UNSIGNED .ipa.
+# Codemagic CI/CD config for Pick2Learn.
 #
-# You then sign + install that .ipa onto your iPad from Windows using Sideloadly
-# (with a free Apple ID). See the "Put it on your iPad" section of README.md.
-#
-# How to use:
-#   1. Push this project to a GitHub/GitLab repo (or upload in Codemagic).
-#   2. In Codemagic, add the app and run the "ios-unsigned" workflow.
-#   3. Download the Pick2Learn-unsigned.ipa artifact when it finishes.
+# Two workflows:
+#   * ios-adhoc    — builds a SIGNED ad-hoc .ipa (installs on your registered
+#                    iPad for ~1 year via a Safari link, no cable). USE THIS.
+#   * ios-unsigned — builds an UNSIGNED .ipa (for Sideloadly). Kept as a backup.
 
 workflows:
+  # ---------------------------------------------------------------------------
+  # SIGNED ad-hoc build — installs straight onto your iPad over the internet.
+  # ---------------------------------------------------------------------------
+  ios-adhoc:
+    name: iOS Ad Hoc (signed for iPad)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    # Makes the App Store Connect API key (added in Codemagic UI as
+    # "pick2learn_asc") available for signing + the CLI below.
+    integrations:
+      app_store_connect: pick2learn_asc
+    environment:
+      # Codemagic automatically creates/fetches the signing certificate and an
+      # ad-hoc provisioning profile (including every registered device) using
+      # the integration above.
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: com.example.pick2learn
+      flutter: 3.32.5
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Register the iPad UDID (safe to re-run)
+        script: |
+          app-store-connect devices register \
+            --name "iPad Air" \
+            --platform IOS \
+            --udid c2df88a2d879a687572be0c8ccaa8be74118e765 || \
+            echo "Device already registered — continuing."
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Install CocoaPods dependencies
+        script: find . -name "Podfile" -execdir pod install \;
+      - name: Build signed ad-hoc IPA
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+
+  # ---------------------------------------------------------------------------
+  # UNSIGNED build (backup, for Sideloadly). Not needed if ios-adhoc works.
+  # ---------------------------------------------------------------------------
   ios-unsigned:
     name: iOS unsigned IPA (for sideloading)
     max_build_duration: 60
@@ -21,24 +60,17 @@ workflows:
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-
       - name: Install CocoaPods dependencies
-        script: |
-          find . -name "Podfile" -execdir pod install \;
-
+        script: find . -name "Podfile" -execdir pod install \;
       - name: Build iOS (no code signing)
-        script: |
-          flutter build ios --release --no-codesign
-
+        script: flutter build ios --release --no-codesign
       - name: Package into an unsigned .ipa
         script: |
           set -e
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -r Runner.app Payload/
-          # Zip the Payload folder into a standard .ipa container.
           zip -r9 Pick2Learn-unsigned.ipa Payload
           mv Pick2Learn-unsigned.ipa $CM_BUILD_DIR/
     artifacts:
-      # This is the file you download and feed to Sideloadly.
       - Pick2Learn-unsigned.ipa
