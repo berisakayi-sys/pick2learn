@@ -45,6 +45,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Disable Impeller so the app uses the Skia renderer, which is far more
+	     compatible with older devices / iOS 12 (Impeller can crash on old GPUs). -->
+	<key>FLTEnableImpeller</key>
+	<false/>
 	<!-- Permissions Pick2Learn needs to scan / upload homework photos. -->
 	<key>NSCameraUsageDescription</key>
 	<string>Pick2Learn uses the camera to scan your homework.</string>
